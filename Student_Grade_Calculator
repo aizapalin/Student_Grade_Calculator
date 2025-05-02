@@ -1,0 +1,91 @@
+public class StudentGradeCalculator {
+    public static void main(String[] args) {
+        try {
+            String fileName = "grades.txt";
+            java.io.File file = new java.io.File(fileName);
+            
+            if (!file.exists()) {
+                System.out.println("File '" + fileName + "' not found. Creating sample file...");
+                createSampleFile(fileName);
+                System.out.println("Sample file created successfully!");
+            }
+            
+            double averageGrade = calculateAverageGrade(fileName);
+            System.out.println("\nStudent Grades:");
+            printStudentGrades(fileName);
+            System.out.printf("Average Grade: %.2f\n", averageGrade);
+            
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+            e.printStackTrace();
+        }
+    }
+    public static void createSampleFile(String fileName) throws java.io.IOException {
+        java.io.PrintWriter writer = new java.io.PrintWriter(new java.io.FileWriter(fileName));
+        writer.println("Alice 85");
+        writer.println("Bob 90");
+        writer.println("Charlie 75");
+        writer.close();
+    }
+    public static double calculateAverageGrade(String fileName) throws java.io.IOException {
+        java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(fileName));
+        String line;
+        double sum = 0;
+        int count = 0;
+        
+        while ((line = reader.readLine()) != null) {
+            if (line.trim().isEmpty()) {
+                continue;
+            }
+            
+            String[] parts = line.split("\\s+");
+          
+            if (parts.length < 2 || parts[0].equals("Average")) {
+                continue;
+            }
+            try {
+                double grade = Double.parseDouble(parts[parts.length - 1]);
+                sum += grade;
+                count++;
+            } catch (NumberFormatException e) {
+                System.out.println("Warning: Could not parse grade in line: " + line);
+            }
+        }
+        
+        reader.close();
+        
+        if (count == 0) {
+            return 0.0;
+        }
+        
+        return sum / count;
+    }
+    public static void printStudentGrades(String fileName) throws java.io.IOException {
+        java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(fileName));
+        String line;
+        
+        while ((line = reader.readLine()) != null) {
+            if (line.trim().isEmpty()) {
+                continue;
+            }
+            String[] parts = line.split("\\s+");
+           
+            if (parts.length < 2 || parts[0].equals("Average")) {
+                continue;
+            }
+            
+            StringBuilder name = new StringBuilder();
+            for (int i = 0; i < parts.length - 1; i++) {
+                name.append(parts[i]);
+                if (i < parts.length - 2) {
+                    name.append(" ");
+                }
+            }
+          
+            String grade = parts[parts.length - 1];
+            System.out.println(name + ": " + grade);
+        }
+        
+        reader.close();
+    }
+}
