@@ -1,15 +1,22 @@
-public class StudentGradeCalculator {
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+public class StudentGradeCalculator {    
     public static void main(String[] args) {
         try {
-            String fileName = "grades.txt";
-            java.io.File file = new java.io.File(fileName);
+            String fileName = "grade.txt";
+            File file = new File(fileName);
             
             if (!file.exists()) {
                 System.out.println("File '" + fileName + "' not found. Creating sample file...");
                 createSampleFile(fileName);
                 System.out.println("Sample file created successfully!");
             }
-            
+        
             double averageGrade = calculateAverageGrade(fileName);
             System.out.println("\nStudent Grades:");
             printStudentGrades(fileName);
@@ -20,15 +27,17 @@ public class StudentGradeCalculator {
             e.printStackTrace();
         }
     }
-    public static void createSampleFile(String fileName) throws java.io.IOException {
-        java.io.PrintWriter writer = new java.io.PrintWriter(new java.io.FileWriter(fileName));
+
+    public static void createSampleFile(String fileName) throws IOException {
+        PrintWriter writer = new PrintWriter(new FileWriter(fileName));
         writer.println("Alice 85");
         writer.println("Bob 90");
         writer.println("Charlie 75");
         writer.close();
     }
-    public static double calculateAverageGrade(String fileName) throws java.io.IOException {
-        java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(fileName));
+
+    public static double calculateAverageGrade(String fileName) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(fileName));
         String line;
         double sum = 0;
         int count = 0;
@@ -37,9 +46,7 @@ public class StudentGradeCalculator {
             if (line.trim().isEmpty()) {
                 continue;
             }
-            
             String[] parts = line.split("\\s+");
-          
             if (parts.length < 2 || parts[0].equals("Average")) {
                 continue;
             }
@@ -54,14 +61,11 @@ public class StudentGradeCalculator {
         
         reader.close();
         
-        if (count == 0) {
-            return 0.0;
-        }
-        
-        return sum / count;
+        return count == 0 ? 0.0 : sum / count;
     }
-    public static void printStudentGrades(String fileName) throws java.io.IOException {
-        java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(fileName));
+
+    public static void printStudentGrades(String fileName) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(fileName));
         String line;
         
         while ((line = reader.readLine()) != null) {
@@ -69,11 +73,11 @@ public class StudentGradeCalculator {
                 continue;
             }
             String[] parts = line.split("\\s+");
-           
+            
             if (parts.length < 2 || parts[0].equals("Average")) {
                 continue;
             }
-            
+           
             StringBuilder name = new StringBuilder();
             for (int i = 0; i < parts.length - 1; i++) {
                 name.append(parts[i]);
@@ -81,7 +85,7 @@ public class StudentGradeCalculator {
                     name.append(" ");
                 }
             }
-          
+            
             String grade = parts[parts.length - 1];
             System.out.println(name + ": " + grade);
         }
